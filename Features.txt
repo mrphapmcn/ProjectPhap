@@ -1,0 +1,42 @@
+1. JSONObject runObject = new JSONObject()
+                            .put("command", 3)
+                            //.put("id", requestID)
+                            
+.put("location", new JSONObject().put("lat", gps.getLat()).put("lng", gps.getLng()));
+
+   mSocket.emit("driver", runObject);
+
+2. Call api: tracks, 
+trong response trả về neu code = 403 -> token timeout -> clear all cache(token, liên quan đến thông tin user login...)
+
+* Note:
+- Nếu không có khách: cứ sau 30s gọi lại hàm để thực hiện 1 vs 2
+- Nếu đang có khách: cứ sau 15s gọi lại hàm để thực hiện 1 vs 2
+- Neu logout thi clear all cache và bắn socket
+			mSocket.disconnect();
+            mSocket.off("login");
+            mSocket.off("request");
+            mSocket.off("driver");
+
+
+//
+Default : 30s
+Click vao bat dau chuyen di thay doi gia tri 15s 
+
+functionTimerUp{
+	progressTimer ++
+	if(co khach && progressTimer % 15 == 0){	
+		[self functionRequest]
+	}else if(progressTimer % 30 == 0){
+		[self functionRequest]
+	}
+}
+functionRequest : (int) state{
+	Request Api : tracks 
+	if(code = 403){
+		clear all cache,token,informationLogin
+		present viewController LogIn ?????
+	}else{
+		socket emit ("driver",runObject)
+	}
+}
